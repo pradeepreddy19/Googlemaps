@@ -2,6 +2,9 @@
 Fall 2021 October 8, 2021
 Pradeep Rokkam, Joy Zayatz
 
+[link to google doc version](https://docs.google.com/document/d/1M894JdJTCfkp1vTF8Db_MiFHWmYv2sLi0xKOMlqHuVk/edit?usp=sharing)
+
+
 
 ## Part 1:  The 2021 Puzzle
 Objective.  Use A* search to find sequence of moves that gets puzzle back in order.   
@@ -35,7 +38,7 @@ __Discussion__
 ## Part 2:  Road Trip!!!
 
 Objective:  use A* search to find driving directions between two cities and cost function given by the user.  
-Bonus points for finding shortest route, but passes through at least one city in each 48 contiguous states.
+Bonus points for finding shortest route that passes through at least one city in each 48 contiguous states.
 
 
 
@@ -62,8 +65,8 @@ __Discussion__
 
 ## Part 3:  Choosing Teams
 
-Objective:  Assign student sot teams that minimizes total amount of work  
-Multiple soclutions allowed.  Solution can start with an approximate answer while continuing to look for better ones
+Objective:  Assign students to teams that minimizes total amount of work for instructors
+Multiple solutions allowed.  program can start with an approximate answer while continuing to look for better ones
 
 
 
