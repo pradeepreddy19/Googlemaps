@@ -1,7 +1,7 @@
 #!/usr/local/bin/python3
 # route.py : Find routes through maps
 #
-# Code by: name IU ID
+# Code by: Pradeep Reddy Rokkam and Joy Zayatz
 #
 # Based on skeleton code by V. Mathur and D. Crandall, January 2021
 #
@@ -9,7 +9,54 @@
 
 # !/usr/bin/env python3
 import sys
+
+# Code to read the cities and their GPS co-ordiantes (Lattitudes and Longitudes)
+def city_gps_read():
+    print("Pradeep Reddy Rokkam")
+    city_gps_detail={}
+    i=0
+    with open('city-gps.txt','r') as f:
+        for line in f:
+            city_gps_detail[line.split()[0]]=line.split()[1:]
+            # print(i,end="--")
+            i+=1
+    return city_gps_detail
+
+# Code to read the cities and gets all the connected cities with the information of distance, speed limit and the highway that needs to taken to reach from source city to its connected city 
+def road_segments_read():
+    print("Pradeep Reddy Rokkam")
+    road_segment_detail={}
+    i=0
+    with open('road-segments.txt','r') as f:
+        for line in f:
+            if line.split()[0] in road_segment_detail:
+                road_segment_detail[line.split()[0]].append(line.split()[1:])
+            else:
+                road_segment_detail[line.split()[0]]=[]
+                road_segment_detail[line.split()[0]].append(line.split()[1:])
+            # print(i,end="--")
+            i=i+1
+        return road_segment_detail
+
+
+
+
 def get_route(start, end, cost):
+
+    
+    city_gps=city_gps_read() # Has dictionary of cities as the keys and the values being their lattitudes and longitudes in a list 
+    print("The number of cities are ")
+    print(len(city_gps.keys()))
+    print(city_gps['Bloomington,_Indiana'])
+
+    road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
+    print("The number of keys are")
+    print(len(road_segment.keys()))
+
+
+
+
+
     
     """
     Find shortest driving route between start city and end city
