@@ -41,6 +41,7 @@ def road_segments_read():
 
 
 
+
 def get_route(start, end, cost):
 
     
@@ -52,6 +53,16 @@ def get_route(start, end, cost):
     road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
     print("The number of keys are")
     print(len(road_segment.keys()))
+
+    # Fringe tha thas all the un-expanded cities along with their proirity( lower the number higher the priority)
+        #Priority may vary based on the cost function
+            # First lets obtain the right answer for the cost function distance 
+            # This involves the heuristic function f(s)=g(s)+h(s) where g(s) is the cost of the path so far and h(s) is the heuristic function that will estimate the cost from the current city to the destination city
+            # What is the Heuristic Function in our case?
+                # Shortest Possible distance (asuuming a staright line path and no obstacles in between) between the current city and the destination city through lattitudes and longitudes
+                    # Check if latitiudes and longitudes are the legal ones are not 
+                    # Make sure the distance is not negative
+                    # Also make sure that it is a straight line distance i.e. it is the shortest distance possible and is less than the optimal cost. This condition ensures the admissibilty 
 
 
 
