@@ -8,36 +8,75 @@
 
 
 # !/usr/bin/env python3
+from os import get_inheritable
 import sys
+import math
+from typing import ContextManager
 
 # Code to read the cities and their GPS co-ordiantes (Lattitudes and Longitudes)
 def city_gps_read():
     print("Pradeep Reddy Rokkam")
     city_gps_detail={}
-    i=0
     with open('city-gps.txt','r') as f:
         for line in f:
             city_gps_detail[line.split()[0]]=line.split()[1:]
             # print(i,end="--")
-            i+=1
     return city_gps_detail
 
 # Code to read the cities and gets all the connected cities with the information of distance, speed limit and the highway that needs to taken to reach from source city to its connected city 
 def road_segments_read():
     print("Pradeep Reddy Rokkam")
     road_segment_detail={}
-    i=0
     with open('road-segments.txt','r') as f:
         for line in f:
+            # Get the cities aand their connected cities information. This will take care of one way information. Remember this road can work in other way as well. That will be handled in the next if statement
             if line.split()[0] in road_segment_detail:
-                road_segment_detail[line.split()[0]].append(line.split()[1:])
+                road_segment_detail[line.split()[0]].append(line.split()[1:]) 
             else:
                 road_segment_detail[line.split()[0]]=[]
                 road_segment_detail[line.split()[0]].append(line.split()[1:])
             # print(i,end="--")
-            i=i+1
+
+            if line.split()[1] in road_segment_detail:
+                road_segment_detail[line.split()[1]].append(list((line.split()[0],line.split()[2],line.split()[3],line.split()[4])))
+            else:
+                road_segment_detail[line.split()[1]]=[]
+                road_segment_detail[line.split()[1]].append(list((line.split()[0],line.split()[2],line.split()[3],line.split()[4])))
+            
         return road_segment_detail
 
+def estimated_dist(city_gps,curr_city,dest_city):
+    
+    #How does our heuristic function should be?
+        # Our heuristics function should take inputs as lattititudes and longitudes, and output as a distance in  miles
+            #Why only miles:
+                #Because the curr distance g(s) is miles and we want our estimated distance in miles as well
+    # Using the Haversine Formula we can get distance between two co ordinates
+    lat1=float(city_gps[str(curr_city)][0])
+    long1= float(city_gps[str(curr_city)][1])
+    lat2=float(city_gps[str(dest_city)][0])
+    long2= float(city_gps[str(dest_city)][1])
+
+
+    # print(lat1,"---",long1,"---",lat2,"---",long2)
+
+    #Converting the the lattiudes and longitudes into radians
+    pii=math.pi
+
+    lat1 = lat1*(pii/180)
+    long1 = long1*(pii/180)
+    lat2 = lat2*(pii/180)
+    long2 = long2*(pii/180)
+    
+    a=( math.sin((lat1-lat2)/2) * math.sin((lat1-lat2)/2) ) +  (  math.cos(lat1) *  math.cos(lat2) * (math.sin((long1-long2)/2) * math.sin((long1-long2)/2))  )
+
+    c= 2* math.atan2 (math.sqrt(a),math.sqrt(1-a))
+
+    distance = 3958.8 * c
+    
+    # print("The estimated distance between the {} city and {} city is {} miles".format(curr_city,dest_city,distance))
+
+    return distance
 
 
 
@@ -54,6 +93,67 @@ def get_route(start, end, cost):
     print("The number of keys are")
     print(len(road_segment.keys()))
 
+    # Check if the source and destination cities are in the CIty GPS and Segment File
+    if start not in city_gps.keys() or start not in road_segment.keys() or end not in city_gps.keys() or end not in road_segment.keys()  :
+        print("no key executed")
+        return False
+
+    if start==end:
+        return "Your source and destination are same"
+    else:   
+        #Add the fringe Data Structure
+        curr_dist=0
+        est_dist= estimated_dist(city_gps,start,end)
+        fringe=[(start,curr_dist,est_dist)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+        print(fringe) #dummy
+
+    # count=0
+    # for i in road_segment:
+    #     print(count)
+    #     print(i,":",road_segment[i])
+    #     count=count+1
+    #     if count>30:
+    #         break
+    count_2=0
+    while fringe:   
+        
+        high_priority= min([x[1]+x[2] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
+        index_high_prty= [x[1]+x[2] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
+        print("Highest priority is {}".format(high_priority))
+        curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
+
+
+        
+        print("The city with the highest priority that was popped {}".format(curr_city_prty))
+        curr_city=curr_city_prty[0]
+        curr_dist=curr_city_prty[1]
+        print("The current city is {}".format(curr_city)) 
+        print("The current distance is {}".format(curr_dist))
+
+
+        for next_city in road_segment[curr_city]:
+            print(count_2)
+            # print(next_city)
+            dist_travelled=curr_dist+float(next_city[1])
+            if next_city[0] not in city_gps.keys():
+                continue
+            fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end)))
+        
+        # print(fringe)
+        
+        
+        if count_2>12000:
+            break
+        count_2+=1
+            
+        # if current_city==end:
+        #     return "You have reached the destination"
+
+
+        # else:
+        #     for i in 
+
+
     # Fringe tha thas all the un-expanded cities along with their proirity( lower the number higher the priority)
         #Priority may vary based on the cost function
             # First lets obtain the right answer for the cost function distance 
@@ -63,6 +163,7 @@ def get_route(start, end, cost):
                     # Check if latitiudes and longitudes are the legal ones are not 
                     # Make sure the distance is not negative
                     # Also make sure that it is a straight line distance i.e. it is the shortest distance possible and is less than the optimal cost. This condition ensures the admissibilty 
+    
 
 
 
