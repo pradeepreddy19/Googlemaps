@@ -119,7 +119,7 @@ def get_route(start, end, cost):
         
         high_priority= min([x[1]+x[2] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
         index_high_prty= [x[1]+x[2] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
-        print("Highest priority is {}".format(high_priority))
+        # print("Highest priority is {}".format(high_priority))
         curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
 
 
@@ -127,22 +127,32 @@ def get_route(start, end, cost):
         print("The city with the highest priority that was popped {}".format(curr_city_prty))
         curr_city=curr_city_prty[0]
         curr_dist=curr_city_prty[1]
-        print("The current city is {}".format(curr_city)) 
-        print("The current distance is {}".format(curr_dist))
-
-
+        if curr_city==end:
+            print("You have reached your destination -------------------------*--------------------------")
+            break
+        # print("The current city is {}".format(curr_city)) 
+        # print("The current distance is {}".format(curr_dist))
+        print("The length of the fringe is {}".format(len(fringe)))
+        # print(road_segment["Lake_Station,_Indiana"])
+        print(count_2)
+        # print("The successor cities are {}".format(road_segment[curr_city]))
         for next_city in road_segment[curr_city]:
-            print(count_2)
+          
             # print(next_city)
             dist_travelled=curr_dist+float(next_city[1])
             if next_city[0] not in city_gps.keys():
+                # print(next_city)
                 continue
-            fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end)))
+            if next_city[0] not in [x[0] for x in fringe]:
+                
+                # print([x[0] for x in fringe])
+            # print("Pradeep")
+                fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end)))
         
         # print(fringe)
         
-        
-        if count_2>12000:
+        print(count_2)
+        if count_2>60000:
             break
         count_2+=1
             
