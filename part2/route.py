@@ -92,7 +92,7 @@ def get_route(start, end, cost):
     road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
     print("The number of keys are")
     print(len(road_segment.keys()))
-
+    # print(road_segment)
     # Check if the source and destination cities are in the CIty GPS and Segment File
     if start not in city_gps.keys() or start not in road_segment.keys() or end not in city_gps.keys() or end not in road_segment.keys()  :
         print("no key executed")
@@ -104,8 +104,11 @@ def get_route(start, end, cost):
         #Add the fringe Data Structure
         curr_dist=0
         est_dist= estimated_dist(city_gps,start,end)
-        fringe=[(start,curr_dist,est_dist)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
-        print(fringe) #dummy
+        # Creating a list of tuples to store the route taken 
+        route_taken=[[]]
+        time_taken=0
+        fringe=[(start,curr_dist,est_dist,time_taken,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+        # print(fringe) #dummy
 
     # count=0
     # for i in road_segment:
@@ -115,6 +118,7 @@ def get_route(start, end, cost):
     #     if count>30:
     #         break
     count_2=0
+
     while fringe:   
         
         high_priority= min([x[1]+x[2] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
@@ -122,24 +126,34 @@ def get_route(start, end, cost):
         # print("Highest priority is {}".format(high_priority))
         curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
 
-
         
-        print("The city with the highest priority that was popped {}".format(curr_city_prty))
+        
+        
+        # print("The city with the highest priority that was popped {}".format(curr_city_prty))
         curr_city=curr_city_prty[0]
         curr_dist=curr_city_prty[1]
+        time_taken=curr_city_prty[3]
+        route_taken=curr_city_prty[4]
+        
+
+        # print("The route is {}".format(route_taken))
         if curr_city==end:
             print("You have reached your destination -------------------------*--------------------------")
+            route_taken.pop(0)
+            # print(route_taken)
             break
         # print("The current city is {}".format(curr_city)) 
         # print("The current distance is {}".format(curr_dist))
-        print("The length of the fringe is {}".format(len(fringe)))
+        # print("The length of the fringe is {}".format(len(fringe)))
         # print(road_segment["Lake_Station,_Indiana"])
         print(count_2)
         # print("The successor cities are {}".format(road_segment[curr_city]))
         for next_city in road_segment[curr_city]:
-          
+            
+            # print(road_segment[curr_city])
             # print(next_city)
             dist_travelled=curr_dist+float(next_city[1])
+            time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance by Speed Limit will give us the time taken
             if next_city[0] not in city_gps.keys():
                 # print(next_city)
                 continue
@@ -147,13 +161,22 @@ def get_route(start, end, cost):
                 
                 # print([x[0] for x in fringe])
             # print("Pradeep")
-                fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end)))
+                curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1]),time_taken]]
+                # print(curr_route)
+                # print(route_taken)
+                # print(type(route_taken))
+                # print(route_taken.append(curr_route))
+                curr_route= route_taken+curr_route
+                # print(curr_route)
+                # print("Append the current route {}".format(curr_route))
+                fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end),time_travelled,curr_route))
         
         # print(fringe)
         
         print(count_2)
-        if count_2>60000:
-            break
+        # if count_2>300:
+
+        #     break
         count_2+=1
             
         # if current_city==end:
@@ -200,13 +223,15 @@ def get_route(start, end, cost):
     5. The current code just returns a dummy solution.
     """
 
-    route_taken = [("Martinsville,_Indiana","IN_37 for 19 miles"),
-                   ("Jct_I-465_&_IN_37_S,_Indiana","IN_37 for 25 miles"),
-                   ("Indianapolis,_Indiana","IN_37 for 7 miles")]
     
+    #Converting list of lists  into list of tuples for the route taken
+    print("Converting into tuple")
+    route_taken= [(x[0],x[1]) for x in route_taken]
+    # print(route_taken)
     return {"total-segments" : len(route_taken), 
-            "total-miles" : 51., 
-            "total-hours" : 1.07949, 
+            "total-miles" : curr_dist, 
+            "total-hours" : time_taken
+            , 
             "total-delivery-hours" : 1.1364, 
             "route-taken" : route_taken}
 
