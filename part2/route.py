@@ -11,11 +11,10 @@
 from os import get_inheritable
 import sys
 import math
-from typing import ContextManager
+# from typing import ContextManager
 
 # Code to read the cities and their GPS co-ordiantes (Lattitudes and Longitudes)
 def city_gps_read():
-    print("Pradeep Reddy Rokkam")
     city_gps_detail={}
     with open('city-gps.txt','r') as f:
         for line in f:
@@ -25,18 +24,17 @@ def city_gps_read():
 
 # Code to read the cities and gets all the connected cities with the information of distance, speed limit and the highway that needs to taken to reach from source city to its connected city 
 def road_segments_read():
-    print("Pradeep Reddy Rokkam")
     road_segment_detail={}
     with open('road-segments.txt','r') as f:
         for line in f:
-            # Get the cities aand their connected cities information. This will take care of one way information. Remember this road can work in other way as well. That will be handled in the next if statement
+            # Get the cities and their connected cities information. This will take care of one way information. Remember this road can work in other way as well. That will be handled in the next if statement
             if line.split()[0] in road_segment_detail:
                 road_segment_detail[line.split()[0]].append(line.split()[1:]) 
             else:
                 road_segment_detail[line.split()[0]]=[]
                 road_segment_detail[line.split()[0]].append(line.split()[1:])
-            # print(i,end="--")
-
+            
+            # This will take care of two way routes
             if line.split()[1] in road_segment_detail:
                 road_segment_detail[line.split()[1]].append(list((line.split()[0],line.split()[2],line.split()[3],line.split()[4])))
             else:
@@ -45,6 +43,26 @@ def road_segments_read():
             
         return road_segment_detail
 
+# For the given road segments get the distance such that it has maximum distance between two segments
+def get_max_dist_segment():
+    distance=[]
+    with open('road-segments.txt','r') as f:
+        for line in f:
+            a=line.split()[2]
+            distance.append(a)
+    return (max(distance))
+               
+# For the given road segments get the spped that has maximum speed between two segments
+def get_max_speed_segment():
+    speed=[]
+    with open('road-segments.txt','r') as f:
+        for line in f:
+            a=line.split()[3]
+            speed.append(a)
+    return (max(speed))
+
+
+# Get the Estimated distance between two cities, this is will be used as the heuristic function. This is crucial to our program 
 def estimated_dist(city_gps,curr_city,dest_city):
     
     #How does our heuristic function should be?
@@ -52,13 +70,12 @@ def estimated_dist(city_gps,curr_city,dest_city):
             #Why only miles:
                 #Because the curr distance g(s) is miles and we want our estimated distance in miles as well
     # Using the Haversine Formula we can get distance between two co ordinates
+
     lat1=float(city_gps[str(curr_city)][0])
     long1= float(city_gps[str(curr_city)][1])
     lat2=float(city_gps[str(dest_city)][0])
     long2= float(city_gps[str(dest_city)][1])
 
-
-    # print(lat1,"---",long1,"---",lat2,"---",long2)
 
     #Converting the the lattiudes and longitudes into radians
     pii=math.pi
@@ -73,8 +90,6 @@ def estimated_dist(city_gps,curr_city,dest_city):
     c= 2* math.atan2 (math.sqrt(a),math.sqrt(1-a))
 
     distance = 3958.8 * c
-    
-    # print("The estimated distance between the {} city and {} city is {} miles".format(curr_city,dest_city,distance))
 
     return distance
 
@@ -82,110 +97,6 @@ def estimated_dist(city_gps,curr_city,dest_city):
 
 
 def get_route(start, end, cost):
-
-    
-    city_gps=city_gps_read() # Has dictionary of cities as the keys and the values being their lattitudes and longitudes in a list 
-    print("The number of cities are ")
-    print(len(city_gps.keys()))
-    print(city_gps['Bloomington,_Indiana'])
-
-    road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
-    print("The number of keys are")
-    print(len(road_segment.keys()))
-    # print(road_segment)
-    # Check if the source and destination cities are in the CIty GPS and Segment File
-    if start not in city_gps.keys() or start not in road_segment.keys() or end not in city_gps.keys() or end not in road_segment.keys()  :
-        print("no key executed")
-        return False
-
-    if start==end:
-        return "Your source and destination are same"
-    else:   
-        #Add the fringe Data Structure
-        curr_dist=0
-        est_dist= estimated_dist(city_gps,start,end)
-        # Creating a list of tuples to store the route taken 
-        route_taken=[[]]
-        time_taken=0
-        fringe=[(start,curr_dist,est_dist,time_taken,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
-        # print(fringe) #dummy
-
-    # count=0
-    # for i in road_segment:
-    #     print(count)
-    #     print(i,":",road_segment[i])
-    #     count=count+1
-    #     if count>30:
-    #         break
-    count_2=0
-
-    while fringe:   
-        
-        high_priority= min([x[1]+x[2] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
-        index_high_prty= [x[1]+x[2] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
-        # print("Highest priority is {}".format(high_priority))
-        curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
-
-        
-        
-        
-        # print("The city with the highest priority that was popped {}".format(curr_city_prty))
-        curr_city=curr_city_prty[0]
-        curr_dist=curr_city_prty[1]
-        time_taken=curr_city_prty[3]
-        route_taken=curr_city_prty[4]
-        
-
-        # print("The route is {}".format(route_taken))
-        if curr_city==end:
-            print("You have reached your destination -------------------------*--------------------------")
-            route_taken.pop(0)
-            # print(route_taken)
-            break
-        # print("The current city is {}".format(curr_city)) 
-        # print("The current distance is {}".format(curr_dist))
-        # print("The length of the fringe is {}".format(len(fringe)))
-        # print(road_segment["Lake_Station,_Indiana"])
-        print(count_2)
-        # print("The successor cities are {}".format(road_segment[curr_city]))
-        for next_city in road_segment[curr_city]:
-            
-            # print(road_segment[curr_city])
-            # print(next_city)
-            dist_travelled=curr_dist+float(next_city[1])
-            time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance by Speed Limit will give us the time taken
-            if next_city[0] not in city_gps.keys():
-                # print(next_city)
-                continue
-            if next_city[0] not in [x[0] for x in fringe]:
-                
-                # print([x[0] for x in fringe])
-            # print("Pradeep")
-                curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1]),time_taken]]
-                # print(curr_route)
-                # print(route_taken)
-                # print(type(route_taken))
-                # print(route_taken.append(curr_route))
-                curr_route= route_taken+curr_route
-                # print(curr_route)
-                # print("Append the current route {}".format(curr_route))
-                fringe.append((next_city[0],dist_travelled,estimated_dist(city_gps,next_city[0],end),time_travelled,curr_route))
-        
-        # print(fringe)
-        
-        print(count_2)
-        # if count_2>300:
-
-        #     break
-        count_2+=1
-            
-        # if current_city==end:
-        #     return "You have reached the destination"
-
-
-        # else:
-        #     for i in 
-
 
     # Fringe tha thas all the un-expanded cities along with their proirity( lower the number higher the priority)
         #Priority may vary based on the cost function
@@ -196,11 +107,316 @@ def get_route(start, end, cost):
                     # Check if latitiudes and longitudes are the legal ones are not 
                     # Make sure the distance is not negative
                     # Also make sure that it is a straight line distance i.e. it is the shortest distance possible and is less than the optimal cost. This condition ensures the admissibilty 
-    
+
+    city_gps=city_gps_read() # Has dictionary of cities as the keys and the values being their lattitudes and longitudes in a list 
+
+    road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
+
+    # Check if the source and destination cities are in the City GPS and Segment File
+    if start not in city_gps.keys() or start not in road_segment.keys() or end not in city_gps.keys() or end not in road_segment.keys()  :
+        return False
+
+    if start==end:
+        return "Your source and destination are same"
+
+    count_2=0
+
+    if cost=="distance":
+        #Add the fringe Data Structure
+        curr_dist=0
+        est_dist= estimated_dist(city_gps,start,end)
+        # Creating a list of tuples to store the route taken 
+        route_taken=[[]]
+        time_taken=0
+        delivery_time=0
+        fringe=[(start,curr_dist,est_dist,time_taken,delivery_time,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+
+        while fringe:   
+            
+            high_priority= min([x[1]+x[2] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
+
+            index_high_prty= [x[1]+x[2] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
+
+            curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
+
+            # print("The city with the highest priority that was popped {}".format(curr_city_prty[0:3]))
+            curr_city=curr_city_prty[0]
+            curr_dist=curr_city_prty[1]
+            curr_est_distance=curr_city_prty[2]
+            time_taken=curr_city_prty[3]
+            delivery_time=curr_city_prty[4]
+            route_taken=curr_city_prty[5]
+            
+            # Check if the city that is popped out from the from fringe is the destination city, if it is tru then break out of the loop
+            if curr_city==end:
+                # print("-------------------------*-------------------------You have reached your destination -------------------------*--------------------------")
+                route_taken.pop(0)
+                # print(route_taken)
+                break
+            
+            #Adding the successors to the fringe 
+            for next_city in road_segment[curr_city]:
+               
+                dist_travelled=curr_dist+float(next_city[1]) # This gives the distance travelled byb our driver to reach this particular city 
+                time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance divided by Speed Limit will give us the time taken
+
+                # Code to get delivery time 
+                if float(next_city[2])<50:
+                    del_time=delivery_time + (float(next_city[1])/float(next_city[2]))
+                else:
+                    del_time= delivery_time +(float(next_city[1])/float(next_city[2])) + (math.tanh(float(next_city[1])/1000 * 2 * (delivery_time + ((float(next_city[1])/float(next_city[2])) ))))
+
+                # If a city's information is not avialble in the city-gps.txt, it difficult to evalute the estimated distance between the given city and the destination as we dont have any co-ordinates information
+                if next_city[0] not in city_gps.keys() and next_city[0] in road_segment.keys(): 
+                    # print("-----",curr_city,"--------",next_city[0])
+                    estimated_distance=curr_est_distance
+              
+                elif next_city[0] not in city_gps.keys() and next_city[0]  not in road_segment.keys(): 
+                    continue
+                else:
+                    estimated_distance=estimated_dist(city_gps,next_city[0],end)
+
+                # We wiil only add a city to the fringe if it is not already on the fringe
+                if next_city[0] not in [x[0] for x in fringe]:
+
+                    curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1])]] # Routr to move from the previous city to this city 
+
+                    curr_route= route_taken+curr_route #Adding the rout from previous city to the current city to the route of that has info to recah from source to the prvious city. This will give us the entire route from source to destination
+
+                    fringe.append((next_city[0],dist_travelled,estimated_distance,time_travelled,del_time,curr_route)) # Append all the successor information to the fringe 
+            # print(fringe)
+      # Counter to see the number of times the loop has run
+            if count_2%1000==0:
+                print(count_2)
+            count_2+=1
 
 
+    if cost=="segments":
+        #Add the fringe Data Structure
+        curr_segments=0
+        curr_dist=0
+        max_dist_seg= get_max_dist_segment()
 
+        print(max_dist_seg)
 
+        est_segments= estimated_dist(city_gps,start,end) / float(max_dist_seg)
+        est_dist=estimated_dist(city_gps,start,end)
+        # Creating a list of tuples to store the route taken 
+        route_taken=[[]]
+        time_taken=0
+        delivery_time=0
+        fringe=[(start,curr_dist,est_dist,curr_segments,est_segments,time_taken,delivery_time,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+
+        while fringe:   
+
+            high_priority= min([x[3]+x[4] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
+
+            index_high_prty= [x[3]+x[4] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
+
+            curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
+
+            # print("The city with the highest priority that was popped {}".format(curr_city_prty))
+            curr_city=curr_city_prty[0]
+            curr_dist=curr_city_prty[1]
+            curr_est_distance=curr_city_prty[2]
+            curr_segments=curr_city_prty[3]
+            time_taken=curr_city_prty[5]
+            delivery_time=curr_city_prty[6]
+            route_taken=curr_city_prty[7]
+            
+            # Check if the city that is popped out from the from fringe is the destination city, if it is tru then break out of the loop
+            if curr_city==end:
+                print("-------------------------*-------------------------You have reached your destination -------------------------*--------------------------")
+                route_taken.pop(0)
+                # print(route_taken)
+                break
+            
+            #Adding the successors to the fringe 
+            for next_city in road_segment[curr_city]:
+                
+                dist_travelled=curr_dist+float(next_city[1]) # This gives the distance travelled byb our driver to reach this particular city 
+                segments=curr_segments+1
+                time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance divided by Speed Limit will give us the time taken
+
+                 # Code to get delivery time 
+                if float(next_city[2])<50:
+                    del_time=delivery_time + (float(next_city[1])/float(next_city[2]))
+                else:
+                    del_time= delivery_time +(float(next_city[1])/float(next_city[2])) + (math.tanh(float(next_city[1])/1000 * 2 * (delivery_time + ((float(next_city[1])/float(next_city[2])) ))))
+
+                # If a city's information is not avialble in the city-gps.txt, it difficult to evalute the estimated distance between the given city and the destination as we dont have any co-ordinates information
+                               # If a city's information is not avialble in the city-gps.txt, it difficult to evalute the estimated distance between the given city and the destination as we dont have any co-ordinates information
+                if next_city[0] not in city_gps.keys() and next_city[0] in road_segment.keys(): 
+                    # print("-----",curr_city,"--------",next_city[0])
+                    estimated_distance=curr_est_distance
+              
+                elif next_city[0] not in city_gps.keys() and next_city[0]  not in road_segment.keys(): 
+                    continue
+                else:
+                    estimated_distance=estimated_dist(city_gps,next_city[0],end)
+
+                # We wiil only add a city to the fringe if it is not already on the fringe
+                if next_city[0] not in [x[0] for x in fringe]:
+
+                    curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1])]] # Routr to move from the previous city to this city 
+
+                    curr_route= route_taken+curr_route #Adding the rout from previous city to the current city to the route of that has info to recah from source to the prvious city. This will give us the entire route from source to destination
+
+                    est_segments = estimated_distance / float(max_dist_seg)
+                    fringe.append((next_city[0],dist_travelled,estimated_distance,segments,est_segments,time_travelled,del_time,curr_route)) # Append all the successor information to the fringe 
+            
+      # Counter to see the number of times the loop has run
+            if count_2%1000==0:
+                print(count_2)
+            count_2+=1
+        
+    if cost=="time":
+        #Add the fringe Data Structure
+        curr_dist=0
+        max_speed_seg= get_max_speed_segment()
+       
+
+        est_time= estimated_dist(city_gps,start,end) / float(max_speed_seg)
+        est_dist=estimated_dist(city_gps,start,end)
+        # Creating a list of tuples to store the route taken 
+        route_taken=[[]]
+        time_taken=0
+        delivery_time=0
+        fringe=[(start,curr_dist,est_dist,time_taken,est_time,delivery_time,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+
+        while fringe:   
+
+            high_priority= min([x[3]+x[4] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
+
+            index_high_prty= [x[3]+x[4] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
+
+            curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
+
+            # print("The city with the highest priority that was popped {}".format(curr_city_prty[0:4]))
+            curr_city=curr_city_prty[0]
+            curr_dist=curr_city_prty[1]
+            curr_est_distance=curr_city_prty[2]
+            time_taken=curr_city_prty[3]
+            delivery_time=curr_city_prty[5]
+            route_taken=curr_city_prty[6]
+            
+            # Check if the city that is popped out from the from fringe is the destination city, if it is tru then break out of the loop
+            if curr_city==end:
+                print("-------------------------*-------------------------You have reached your destination -------------------------*--------------------------")
+                route_taken.pop(0)
+                # print(route_taken)
+                break
+            
+            #Adding the successors to the fringe 
+            for next_city in road_segment[curr_city]:
+                
+                dist_travelled=curr_dist+float(next_city[1]) # This gives the distance travelled byb our driver to reach this particular city 
+
+                time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance divided by Speed Limit will give us the time taken
+
+                # Code to get delivery time 
+                if float(next_city[2])<50:
+                    del_time=delivery_time + (float(next_city[1])/float(next_city[2]))
+                else:
+                    del_time= delivery_time +(float(next_city[1])/float(next_city[2])) + (math.tanh(float(next_city[1])/1000 * 2 * (delivery_time + ((float(next_city[1])/float(next_city[2])) ))))
+
+                # If a city's information is not avialble in the city-gps.txt, it difficult to evalute the estimated distance between the given city and the destination as we dont have any co-ordinates information
+                if next_city[0] not in city_gps.keys() and next_city[0] in road_segment.keys(): 
+                    # print("-----",curr_city,"--------",next_city[0])
+                    estimated_distance=curr_est_distance
+              
+                elif next_city[0] not in city_gps.keys() and next_city[0]  not in road_segment.keys(): 
+                    continue
+                else:
+                    estimated_distance=estimated_dist(city_gps,next_city[0],end)
+
+                # We wiil only add a city to the fringe if it is not already on the fringe
+                if next_city[0] not in [x[0] for x in fringe]:
+
+                    curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1])]] # Routr to move from the previous city to this city 
+
+                    curr_route= route_taken+curr_route #Adding the rout from previous city to the current city to the route of that has info to recah from source to the prvious city. This will give us the entire route from source to destination
+
+                    est_time = estimated_distance / float(max_speed_seg)
+                    fringe.append((next_city[0],dist_travelled,estimated_distance,time_travelled,est_time,del_time,curr_route)) # Append all the successor information to the fringe 
+            
+      # Counter to see the number of times the loop has run
+            if count_2%1000==0:
+                print(count_2)
+            count_2+=1
+
+    if cost=="delivery":
+        #Add the fringe Data Structure
+        curr_dist=0
+        max_speed_seg= get_max_speed_segment()
+        est_time= estimated_dist(city_gps,start,end) / float(max_speed_seg)
+        est_dist=estimated_dist(city_gps,start,end)
+        # Creating a list of tuples to store the route taken 
+        route_taken=[[]]
+        time_taken=0
+        delivery_time=0
+        fringe=[(start,curr_dist,est_dist,time_taken,delivery_time,est_time,route_taken)] # Adding the start city and the priority(f(s)= g(s)+h(s)) to the fringe
+
+        while fringe:   
+
+            high_priority= min([x[4]+x[5] for x in fringe]) # Get the city that has the highest priority (also means the city with the lowest heuristic distance)
+
+            index_high_prty= [x[4]+x[5] for x in fringe].index(high_priority) #Get the index where the highest priority lies in 
+
+            curr_city_prty=fringe.pop(index_high_prty) # Pop the city with the highest priority 
+
+            # print("The city with the highest priority that was popped {}".format(curr_city_prty[0:4]))
+            curr_city=curr_city_prty[0]
+            curr_dist=curr_city_prty[1]
+            curr_est_distance=curr_city_prty[2]
+            time_taken=curr_city_prty[3]
+            delivery_time=curr_city_prty[4]
+            route_taken=curr_city_prty[6]
+            
+            # Check if the city that is popped out from the from fringe is the destination city, if it is tru then break out of the loop
+            if curr_city==end:
+                print("-------------------------*-------------------------You have reached your destination -------------------------*--------------------------")
+                route_taken.pop(0)
+                # print(route_taken)
+                break
+            
+            #Adding the successors to the fringe 
+            for next_city in road_segment[curr_city]:
+                
+                dist_travelled=curr_dist+float(next_city[1]) # This gives the distance travelled byb our driver to reach this particular city 
+
+                time_travelled=time_taken + (float(next_city[1])/float(next_city[2])) # Distance divided by Speed Limit will give us the time taken
+                
+                # Code to get delivery time 
+                if float(next_city[2])<50:
+                    del_time=delivery_time + (float(next_city[1])/float(next_city[2]))
+                else:
+                    del_time= delivery_time +(float(next_city[1])/float(next_city[2])) + (math.tanh(float(next_city[1])/1000 * 2 * (delivery_time + ((float(next_city[1])/float(next_city[2])) ))))
+
+                # If a city's information is not avialble in the city-gps.txt, it difficult to evalute the estimated distance between the given city and the destination as we dont have any co-ordinates information
+                if next_city[0] not in city_gps.keys() and next_city[0] in road_segment.keys(): 
+                    # print("-----",curr_city,"--------",next_city[0])
+                    estimated_distance=curr_est_distance
+                elif next_city[0] not in city_gps.keys() and next_city[0]  not in road_segment.keys(): 
+                    continue
+                else:
+                    estimated_distance=estimated_dist(city_gps,next_city[0],end)
+
+                # We wiil only add a city to the fringe if it is not already on the fringe
+                if next_city[0] not in [x[0] for x in fringe]:
+
+                    curr_route= [[next_city[0],"{} for {} miles".format(next_city[3],next_city[1])]] # Routr to move from the previous city to this city 
+
+                    curr_route= route_taken+curr_route #Adding the rout from previous city to the current city to the route of that has info to recah from source to the prvious city. This will give us the entire route from source to destination
+
+                    est_time = estimated_distance / float(max_speed_seg)
+                    fringe.append((next_city[0],dist_travelled,estimated_distance,time_travelled,del_time,est_time,curr_route)) # Append all the successor information to the fringe 
+            
+      # Counter to see the number of times the loop has run
+            if count_2%1000==0:
+                print(count_2)
+            count_2+=1
+            
 
     
     """
@@ -224,15 +440,14 @@ def get_route(start, end, cost):
     """
 
     
-    #Converting list of lists  into list of tuples for the route taken
-    print("Converting into tuple")
+    #Converting list of lists into list of tuples for the route taken (because our main function was designed to handle list of tuples)
     route_taken= [(x[0],x[1]) for x in route_taken]
+
     # print(route_taken)
     return {"total-segments" : len(route_taken), 
             "total-miles" : curr_dist, 
-            "total-hours" : time_taken
-            , 
-            "total-delivery-hours" : 1.1364, 
+            "total-hours" : time_taken, 
+            "total-delivery-hours" : delivery_time, 
             "route-taken" : route_taken}
 
 
