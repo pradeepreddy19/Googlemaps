@@ -146,7 +146,7 @@ def n_out_of_col(board):
 def out_over_moves(board):
     return (n_out_of_row(board)/5)+(n_out_of_col(board)/5)
 
-def solve(star_state):
+def solve(start_state):
     #initialize fringe
     initial_board = parse_board(start_state)
     fringe = (initial_board,0,'staring point', 0)# (board, g, move, f)
