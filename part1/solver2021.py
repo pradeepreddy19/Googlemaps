@@ -16,7 +16,7 @@ def printable_board(board):
     return [ ('%3d ')*COLS  % board[j:(j+COLS)] for j in range(0, ROWS*COLS, COLS) ]
 
 def parse_board(board):
-    return np.array(start_state).reshape(5,5)
+    return np.array(board).reshape(5,5)
 
 # return a list of possible successor states
 def successors(state):
