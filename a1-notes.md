@@ -77,7 +77,10 @@ __Formulating the search problem__
     * **Heuristic functions:** : Just like cost function our heuristic function changes based on the specified cost function
       * _Distance:_ The heuristic function between a given city and the destination is distance given by the Haversine formula by making use lattitudes and longitudes of the source and destination. It is an admissible function as the estimate is always lesser than or equal to the true distance 
          * The haversine formula is as follows:
-         *  Please read the simplification in the discussion segment for the sake of better comprehension
+         * ![image](https://media.github.iu.edu/user/18258/files/769b9100-2701-11ec-8fe5-dac1c8f944cf)
+      * _Segments:_ Estimated distance given by Haversine formula / Maximum distance between two segments in miles in the entire map . This is also an admissible function
+      * _Time:_ Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
+      * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
 
 __Formulating the search problem__ 
 * abstraction
