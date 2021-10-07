@@ -92,39 +92,7 @@ __Discussion__
 I don’t see any difference between the cost function “time” and “delivery”. Why would our pichu/driver travels more than the speed limit of the given highway
 * assumptions:
 * simplifications:
-For the sake of simplicity and discussion purpose,let's think that we are helping pichu to navigate from the source city/town to the destination city/town in the shortest possible criteria our pichu desires ( segments,distance,time, delivery and if possible statetour)
-I think we can take inspiration from the route pichu problem in the Assignment 0. I see a lot of similarities between that problem and this particular problem
 *  decisions made:
-
-
-       * _Segments:_ Sum of **number of towns/cities** that were travelled from source city to destination city
-       * _Time:_ Sum of **time taken to travel** of all roads that were travelled from source city to destination city
-       * _Delivery Time:_ Sum of **time taken to travel (from delivery standpoint)** of all roads that were travelled from source city to destination city
-      * As discussed above edge weights vary based on the cost function.
-
-Heuristic function based on the distance. To implement this we need to use the Haversine Formula as followed
-
-
-
-If we change R(radius of the earth) into miles we get our answer in miles 
-
-* data structures
-We will be using the priority queue here as this gives the functionality of the A* search 
-__How search algorithm works__  
-
-
-__Discussion__
-* challenges:
-I don’t see any difference between the cost function “time” and “delivery”. Why would our pichu/driver travels more than the speed limit of the given highway
-* assumptions:
-* simplifications:
-For the sake of simplicity and discussion purpose,let's think that we are helping pichu to navigate from the source city/town to the destination city/town in the shortest possible criteria our pichu desires ( segments,distance,time, delivery and if possible statetour)
-I think we can take inspiration from the route pichu problem in the Assignment 0. I see a lot of similarities between that problem and this particular problem
-*  decisions made:
-
-
-
-
 
 
 ## Part 3:  Choosing Teams
