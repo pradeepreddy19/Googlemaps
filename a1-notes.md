@@ -83,7 +83,7 @@ __Formulating the search problem__
       * _Time:_ Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
       * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
 
-   * **Data structures** :We will be using the priority queue here as this gives the functionality of the A* search 
+   * **Data structures** :We used a priority queue (priority f(s) = g(s)+h(s)) as the data structure which gives the functionality of the A* search 
 __How search algorithm works__  
 
 
