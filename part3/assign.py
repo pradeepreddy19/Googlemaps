@@ -130,7 +130,8 @@ def solver(input_file):
 
 
     min_cost = 100000000
-    while min_cost >0:
+    shuffles = 1
+    for shuffles in range(1000):
   
         np.random.shuffle(survey_data)
 
@@ -174,9 +175,11 @@ def solver(input_file):
 
                 result = {"assigned-groups": min_cost_groups_str,
                         "total-cost" : min_cost}
+        
+        shuffles += 1
                 
-                yield(result)
-                
+        yield(result)
+            
                 
 
 if __name__ == "__main__":
