@@ -60,7 +60,39 @@ __Discussion__
 * simplifications
 *  decisions made
 
+Please read the simplification in the discussion segment for the sake of better comprehension
 
+__Formulating the search problem__ 
+* **_Abstraction_**
+    * **State Space:** All possible towns/cities that our driver can navigate to 
+    * **Successor function** For a given city that our driver is currently located at, the successor function will give all the possible next cities that our driver can be travel to
+    * **Cost function:** Sum of all the edge costs and it varies for the given cost function:
+       * _Distance:_ Sum of the **distances** of all roads that were travelled from source city to destination city
+       * _Segments:_ Sum of **number of towns/cities** that were travelled from source city to destination city
+       * _Time:_ Sum of **time taken to travel** of all roads that were travelled from source city to destination city
+       * _Delivery Time:_ Sum of **time taken to travel (from delivery standpoint)** of all roads that were travelled from source city to destination city
+      * As discussed above edge weights vary based on the cost function.
+         * For eg: Two routes may have same distance in miles between them, however one route is faster than the other from time standpoint may be because that particular route has higher speed limit than the other
+    * **Goal state:** Our goal state is the destination city our driver wants to navigate to
+    * **Heuristic functions:** : Just like cost function our heuristic function changes based on the specified cost function
+      * _Distance:_ The heuristic function between a given city and the destination is distance given by the Haversine formula by making use lattitudes and longitudes of the source and destination. It is an admissible function as the estimate is always lesser than or equal to the true distance 
+         * The haversine formula is as follows:
+         * ![image](https://media.github.iu.edu/user/18258/files/769b9100-2701-11ec-8fe5-dac1c8f944cf)
+            * If we change R(radius of the earth) into miles we get our answer in miles 
+      * _Segments:_ Estimated distance given by Haversine formula / Maximum distance between two segments in miles in the entire map . This is also an admissible function
+      * _Time:_ Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
+      * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
+
+   * **Data structures** :We will be using the priority queue here as this gives the functionality of the A* search 
+__How search algorithm works__  
+
+
+__Discussion__
+* challenges:
+I don’t see any difference between the cost function “time” and “delivery”. Why would our pichu/driver travels more than the speed limit of the given highway
+* assumptions:
+* simplifications:
+*  decisions made:
 
 
 ## Part 3:  Choosing Teams
