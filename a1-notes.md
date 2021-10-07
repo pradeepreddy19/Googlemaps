@@ -78,31 +78,12 @@ __Formulating the search problem__
       * _Distance:_ The heuristic function between a given city and the destination is distance given by the Haversine formula by making use lattitudes and longitudes of the source and destination. It is an admissible function as the estimate is always lesser than or equal to the true distance 
          * The haversine formula is as follows:
          * ![image](https://media.github.iu.edu/user/18258/files/769b9100-2701-11ec-8fe5-dac1c8f944cf)
+            * If we change R(radius of the earth) into miles we get our answer in miles 
       * _Segments:_ Estimated distance given by Haversine formula / Maximum distance between two segments in miles in the entire map . This is also an admissible function
       * _Time:_ Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
       * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
 
-__Formulating the search problem__ 
-* abstraction
-    * state space:
-All possible towns/cities that our pichu can navigate to 
-    * successor function
-For a given city that our pichu is currently located at, the successor function will give all the possible next cities that our pichu can be placed at:
-    * edge weights
-Edge weights vary based on the cost function.
-For eg: Two routes may have same distance in miles between them, however one route is faster than the other from time standpoint may be because that particular route has higher speed limit than the other
-    * goal state:
-Our goal state is the our destination city our pichu wants to navigate to
-    * heuristic functions (admissible? consistent? accurate? easy to compute?) :
-I think based on cost functions our heuristic function changes. Assuming that we came up with the heuristics functions for each of these cost functions, we need to verify that is the heuristic function easy to compute? Or Is it admissible?
-Heuristic function based on the distance. To implement this we need to use the Haversine Formula as followed
-
-
-
-If we change R(radius of the earth) into miles we get our answer in miles 
-
-* data structures
-We will be using the priority queue here as this gives the functionality of the A* search 
+   * **Data structures** :We will be using the priority queue here as this gives the functionality of the A* search 
 __How search algorithm works__  
 
 
