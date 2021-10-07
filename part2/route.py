@@ -113,7 +113,7 @@ def get_route(start, end, cost):
     road_segment=road_segments_read() #Has a dictinary of cities as the keys and their values are list of lists, where the lists has information of its connected cities and the info for navigation like distance,max spee dof the route and teh high way infromation
 
     # Check if the source and destination cities are in the City GPS and Segment File
-    if start not in city_gps.keys() or start not in road_segment.keys() or end not in city_gps.keys() or end not in road_segment.keys()  :
+    if (start not in city_gps.keys() and start not in road_segment.keys()) or (end not in city_gps.keys() and end not in road_segment.keys()):
         return False
 
     if start==end:
@@ -124,8 +124,12 @@ def get_route(start, end, cost):
 
     if cost=="distance":
         #Add the fringe Data Structure
+
         curr_dist=0
-        est_dist= estimated_dist(city_gps,start,end)
+        if start not in city_gps.keys():
+            est_dist=0
+        else:
+            est_dist= estimated_dist(city_gps,start,end)
         # Creating a list of tuples to store the route taken 
         route_taken=[[]]
         time_taken=0
@@ -204,7 +208,10 @@ def get_route(start, end, cost):
         print(max_dist_seg)
 
         est_segments= estimated_dist(city_gps,start,end) / float(max_dist_seg)
-        est_dist=estimated_dist(city_gps,start,end)
+        if start not in city_gps.keys():
+            est_dist=0
+        else:
+            est_dist= estimated_dist(city_gps,start,end)
         # Creating a list of tuples to store the route taken 
         route_taken=[[]]
         time_taken=0
@@ -283,7 +290,10 @@ def get_route(start, end, cost):
        
 
         est_time= estimated_dist(city_gps,start,end) / float(max_speed_seg)
-        est_dist=estimated_dist(city_gps,start,end)
+        if start not in city_gps.keys():
+            est_dist=0
+        else:
+            est_dist= estimated_dist(city_gps,start,end)
         # Creating a list of tuples to store the route taken 
         route_taken=[[]]
         time_taken=0
@@ -358,7 +368,10 @@ def get_route(start, end, cost):
         curr_dist=0
         max_speed_seg= get_max_speed_segment()
         est_time= estimated_dist(city_gps,start,end) / float(max_speed_seg)
-        est_dist=estimated_dist(city_gps,start,end)
+        if start not in city_gps.keys():
+            est_dist=0
+        else:
+            est_dist= estimated_dist(city_gps,start,end)
         # Creating a list of tuples to store the route taken 
         route_taken=[[]]
         time_taken=0
