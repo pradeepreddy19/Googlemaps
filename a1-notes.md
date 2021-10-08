@@ -109,9 +109,15 @@ A-star search uses best first search to find a goal state from a start state tha
 6.  Find the successors for the city and add them to the fringe 
 
 __Discussion__
-Challenges:  Again as in the first problem the branching factor for the problem is very high.  There are always 24 valid successors for any given state.  This is a challenge for the search because the number of states grows so quickly.  The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically.  
+_Challenges:_ 
+1. As most AI problems we have the problem of exploring huge number of states. Our branching factor varies based on the number of successer cities between two cities. When theis is combine depth we will end up with the huge number of states. This is a challenge for the search because the number of states grows so quickly. The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically. 
+	* This is when A.* come in handy 
+2. Second problem is the that lack of information for few segments, it is difficult to estimate the hueristic distacne between two cities if we dont have information about the lattitudes and longitudes
+	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city
+	* However,this may fail sometimes 
 
-Simplifications:  To find an admissible heuristic, we simplified the goal state to be just the tile in the correct row and column, but don’t have to be in sequence.
+
+Simplifications:  To find an admissible heuristic, we assumed that the distance between between any two cities is the least possible distance 
 
  Decisions made
 * Compared to search algorithm 3 (which also requires a consistent heuristic function),  using search algorithm 2 with an admissible heuristic ran much faster because each successor is not compared to every element in the fringe and visited lists before adding it to the finge .  However, it will repeatedly go back to visited states.
