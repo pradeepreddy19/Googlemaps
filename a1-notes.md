@@ -109,22 +109,17 @@ A-star search uses best first search to find a goal state from a start state tha
 6.  Find the successors for the city and add them to the fringe 
 
 __Discussion__
-_Challenges:_ 
+_Challenges and Decisons made:_ 
 1. As most AI problems we have the problem of exploring huge number of states. Our branching factor varies based on the number of successer cities between two cities. When theis is combine depth we will end up with the huge number of states. This is a challenge for the search because the number of states grows so quickly. The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically. 
 	* This is when A.* come in handy 
 		* Despite this we are observing the code is exploring so many states before it reaches the destination city for the given function
 			* This forced us to use new dictionaries which has the list of vistied nodes along with their importance. But we know that if we dont visit the already vistied states then A* will not give the best solution. So what we have done is that we will visit an already visted state again only if it is more promising now than when we visited it earlier .i.e. The current f value for the state is lower than the previous value. Once this city is added to the fringe then we will update the importance of the city in visited cited dictionary 
 2. Second problem is the that lack of information for few segments, it is difficult to estimate the hueristic distacne between two cities if we dont have information about the lattitudes and longitudes
-	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city.And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no cordiantes help in fniding and optimal solution 
- 
-
-
+	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city.And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no cordiantes could help in finding an optimal solution  
 
 Simplifications:  To find an admissible heuristic, we assumed that the distance between between any two cities is the least possible distance 
 
- Decisions made
-* Compared to search algorithm 3 (which also requires a consistent heuristic function),  using search algorithm 2 with an admissible heuristic ran much faster because each successor is not compared to every element in the fringe and visited lists before adding it to the finge .  However, it will repeatedly go back to visited states.
-* To decrease the number of revisited states, states that share the lowest f value in the fringe are chosen at random to be removed from the fringe.
+
 
 
 ## Part 3:  Choosing Teams
