@@ -99,15 +99,23 @@ __Formulating the search problem__
       * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
 
    * **Data structures** :We used a priority queue (priority f(s) = g(s)+h(s)) as the data structure which gives the functionality of the A* search 
-__How search algorithm works__  
 
+__How search algorithm works__  
+A-star search uses best first search to find a goal state from a start state that minimizes the path between the two states.  This is implemented with a fringe that contains a priority queue where states are stored with an associated f value. The algorithm looks through the fringe for the state with the lowest f value to explore next.  f is the sum of g and h (cost current state and predicted cost to reach goal state).  The steps are as follows:
+1. given an initial state, check if initial state is goal state.  
+2. if the initial state is not the goal state, add the initial state to the fringe.  In this setup, we’re assuming that we are given a with a start city and our driver wants to navigate to the destination city based on the given cost function 
+3.  Remove the city from the fringe that has the lowest value of f.  If there is more than one city that has the same value of f, one of those cities is chosen at random.
+4.  Check the city that is removed from the fringe is a destination city or not. If yes return the path. If not:
+6.  Find the successors for the city and add them to the fringe 
 
 __Discussion__
-* challenges:
-I don’t see any difference between the cost function “time” and “delivery”. Why would our pichu/driver travels more than the speed limit of the given highway
-* assumptions:
-* simplifications:
-*  decisions made:
+Challenges:  Again as in the first problem the branching factor for the problem is very high.  There are always 24 valid successors for any given state.  This is a challenge for the search because the number of states grows so quickly.  The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically.  
+
+Simplifications:  To find an admissible heuristic, we simplified the goal state to be just the tile in the correct row and column, but don’t have to be in sequence.
+
+ Decisions made
+* Compared to search algorithm 3 (which also requires a consistent heuristic function),  using search algorithm 2 with an admissible heuristic ran much faster because each successor is not compared to every element in the fringe and visited lists before adding it to the finge .  However, it will repeatedly go back to visited states.
+* To decrease the number of revisited states, states that share the lowest f value in the fringe are chosen at random to be removed from the fringe.
 
 
 ## Part 3:  Choosing Teams
