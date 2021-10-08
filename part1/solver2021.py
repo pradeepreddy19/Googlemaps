@@ -178,7 +178,7 @@ def solve(start_state):
             for board, move in successors(state):   
                 h = out_over_moves(board)
                 f= g+1+h
-                fringe = np.append(fringe, (board, g+1, move, f)).reshape(-1,4)
+                fringe = np.append(fringe, np.array((board, g+1, move, f), dtype = object)).reshape(-1,4)
     return route
 
 
