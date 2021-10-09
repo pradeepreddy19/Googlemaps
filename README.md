@@ -79,16 +79,17 @@ A-star search uses best first search to find a goal state from a start state tha
 2. if the initial state is not the goal state, add the initial state to the fringe.  In this setup, we’re assuming that we are given a with a start city and our driver wants to navigate to the destination city based on the given cost function 
 3.  Remove the city from the fringe that has the lowest value of f.  If there is more than one city that has the same value of f, one of those cities is chosen at random.
 4.  Check the city that is removed from the fringe is a destination city or not. If yes return the path. If not:
-6.  Find the successors for the city and add them to the fringe 
+5.  Find the successors for the city and add them to the fringe 
+6.  Repeat steps 2-5 until we arrive at the destination city or till fringe is empty
 
 __Discussion__
 _Challenges and Decisons made:_ 
-1. As most AI problems we have the problem of exploring huge number of states. Our branching factor varies based on the number of successer cities between two cities. When theis is combine depth we will end up with the huge number of states. This is a challenge for the search because the number of states grows so quickly. The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically. 
+1. As most AI problems we have the problem of exploring huge number of states. Our branching factor varies based on the number of successer cities between two cities. When we combine branches with depth we will end up with the huge number of states. This is a challenge for the search because the number of states grows so quickly. The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically. 
 	* This is when A.* come in handy 
-		* Despite this we are observing the code is exploring so many states before it reaches the destination city for the given function
-			* This forced us to use new dictionaries which has the list of vistied nodes along with their importance. But we know that if we dont visit the already vistied states then A* will not give the best solution and only gives us a sub-optimal solution. So what we have done is that we will visit an already visted state again only if it is more promising now than when we visited it earlier .i.e. The current f value for the state is lower than the previous value. Once this city is added to the fringe then we will update the importance of the city in visited cited dictionary 
-2. Second problem is the that lack of information for few segments, it is difficult to estimate the hueristic distacne between two cities if we dont have information about the lattitudes and longitudes
-	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city.And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no cordiantes could help in finding an optimal solution  
+		* Despite this we are observing that the code is exploring so many states before it reaches the destination city
+			* This forced us to use a vistied cities dictionary which has the list of vistied cities along with their importance. But we know that if we dont visit the already vistied states then A* will not give the best solution and only gives us a sub-optimal solution. So what we have done is that we will visit an already visted state again if and only if it is more promising now than when we visited it earlier .i.e. The current f value for the city is lower than the previous f value. Once this city is added to the fringe then we will update the importance of the city in visited cites dictionary 
+2. Second problem is the that lack of information for few segments. It is difficult to estimate the hueristic distacne between two cities if we dont have information about the lattitudes and longitudes
+	* To take care of this what we have done is we took its predecessor estimated distance abd subtracted it by the distance of the road segment between predecessor city and current city. And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no co-ordiantes could help in finding an optimal solution  
 
 Simplifications:  To find an admissible heuristic, we assumed that the distance between between any two cities is the least possible distance 
 
