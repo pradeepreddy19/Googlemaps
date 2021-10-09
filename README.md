@@ -49,14 +49,11 @@ Simplifications:  To find a heuristic, we simplified the goal state to be just t
 Objective:  use A* search to find driving directions between two cities and cost function given by the user.  
 Bonus points for finding shortest route, but passes through at least one city in each 48 contiguous states.
 
-__Formulating the search problem__ 
-
-Please read the simplification in the discussion segment for the sake of better comprehension
 
 __Formulating the search problem__ 
 * **_Abstraction_**
     * **State Space:** All possible towns/cities that our driver can navigate to 
-    * **Successor function** For a given city that our driver is currently located at, the successor function will give all the possible next cities that our driver can be travel to
+    * **Successor function** For a given city that our driver is currently located at, the successor function will give all the possible next cities that our driver can travel to
     * **Cost function:** Sum of all the edge costs and it varies for the given cost function:
        * _Distance:_ Sum of the **distances** of all roads that were travelled from source city to destination city
        * _Segments:_ Sum of **number of towns/cities** that were travelled from source city to destination city
@@ -94,17 +91,6 @@ _Challenges and Decisons made:_
 	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city.And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no cordiantes could help in finding an optimal solution  
 
 Simplifications:  To find an admissible heuristic, we assumed that the distance between between any two cities is the least possible distance 
-
-
-
-
-
-
-
-
-
-
-
 
 ## Part 3:  Choosing Teams
 
