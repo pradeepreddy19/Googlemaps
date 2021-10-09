@@ -49,6 +49,52 @@ Simplifications:  To find a heuristic, we simplified the goal state to be just t
 Objective:  use A* search to find driving directions between two cities and cost function given by the user.  
 Bonus points for finding shortest route, but passes through at least one city in each 48 contiguous states.
 
+__Formulating the search problem__ 
+
+Please read the simplification in the discussion segment for the sake of better comprehension
+
+__Formulating the search problem__ 
+* **_Abstraction_**
+    * **State Space:** All possible towns/cities that our driver can navigate to 
+    * **Successor function** For a given city that our driver is currently located at, the successor function will give all the possible next cities that our driver can be travel to
+    * **Cost function:** Sum of all the edge costs and it varies for the given cost function:
+       * _Distance:_ Sum of the **distances** of all roads that were travelled from source city to destination city
+       * _Segments:_ Sum of **number of towns/cities** that were travelled from source city to destination city
+       * _Time:_ Sum of **time taken to travel** of all roads that were travelled from source city to destination city
+       * _Delivery Time:_ Sum of **time taken to travel (from delivery standpoint)** of all roads that were travelled from source city to destination city
+      * As discussed above edge weights vary based on the cost function.
+         * For eg: Two routes may have same distance in miles between them, however one route is faster than the other from time standpoint may be because that particular route has higher speed limit than the other
+    * **Goal state:** Our goal state is the destination city our driver wants to navigate to
+    * **Heuristic functions:** : Just like cost function our heuristic function changes based on the specified cost function
+      * _Distance:_ The heuristic function between a given city and the destination is distance given by the Haversine formula by making use lattitudes and longitudes of the source and destination. It is an admissible function as the estimate is always lesser than or equal to the true distance 
+         * The haversine formula is as follows:
+         * ![image](https://media.github.iu.edu/user/18258/files/769b9100-2701-11ec-8fe5-dac1c8f944cf)
+            * If we change R(radius of the earth) into miles we get our answer in miles 
+      * _Segments:_ Estimated distance given by Haversine formula / Maximum distance between two segments in miles in the entire map . This is also an admissible function
+      * _Time:_ Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
+      * _Delivery Time:_  We can use the same heuristic as the Time here as time is the best case scenario of delivery time. So the heuristic function would be Estimated distance given by Haversine formula / Maximum speed between two segments in miles per hour(mph) in the entire map . This is also an admissible function
+
+   * **Data structures** :We used a priority queue (priority f(s) = g(s)+h(s)) as the data structure which gives the functionality of the A* search 
+
+__How search algorithm works__  
+A-star search uses best first search to find a goal state from a start state that minimizes the path between the two states.  This is implemented with a fringe that contains a priority queue where states are stored with an associated f value. The algorithm looks through the fringe for the state with the lowest f value to explore next.  f is the sum of g and h (cost current state and predicted cost to reach goal state).  The steps are as follows:
+1. given an initial state, check if initial state is goal state.  
+2. if the initial state is not the goal state, add the initial state to the fringe.  In this setup, we’re assuming that we are given a with a start city and our driver wants to navigate to the destination city based on the given cost function 
+3.  Remove the city from the fringe that has the lowest value of f.  If there is more than one city that has the same value of f, one of those cities is chosen at random.
+4.  Check the city that is removed from the fringe is a destination city or not. If yes return the path. If not:
+6.  Find the successors for the city and add them to the fringe 
+
+__Discussion__
+_Challenges and Decisons made:_ 
+1. As most AI problems we have the problem of exploring huge number of states. Our branching factor varies based on the number of successer cities between two cities. When theis is combine depth we will end up with the huge number of states. This is a challenge for the search because the number of states grows so quickly. The longer the search goes on, the more memory is consumed by storing the fringe and list of visited states which makes the search slow down dramatically. 
+	* This is when A.* come in handy 
+		* Despite this we are observing the code is exploring so many states before it reaches the destination city for the given function
+			* This forced us to use new dictionaries which has the list of vistied nodes along with their importance. But we know that if we dont visit the already vistied states then A* will not give the best solution and only gives us a sub-optimal solution. So what we have done is that we will visit an already visted state again only if it is more promising now than when we visited it earlier .i.e. The current f value for the state is lower than the previous value. Once this city is added to the fringe then we will update the importance of the city in visited cited dictionary 
+2. Second problem is the that lack of information for few segments, it is difficult to estimate the hueristic distacne between two cities if we dont have information about the lattitudes and longitudes
+	* To take care of this what we have done is  we took its predecessor estimated distance - the distance of the road segment between source predecessor city and current city.And by doing so we make sure that the city with no co-ordinates is definitely explored and it will be really helpful if this city with no cordiantes could help in finding an optimal solution  
+
+Simplifications:  To find an admissible heuristic, we assumed that the distance between between any two cities is the least possible distance 
+
 
 
 
