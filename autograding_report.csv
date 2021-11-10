@@ -1,0 +1,56 @@
+section,mixed
+teamname,jzayatz-prokkam
+commit used,4db8d1a8d53a3a63b5949a84a84ff37a59f5e47b
+commit date,2021-10-08 21:28:55
+test_puzzle_2021_case1_points,10
+test_puzzle_2021_case1_status,passed
+test_puzzle_2021_case2_points,0
+test_puzzle_2021_case2_status,failed
+test_puzzle_2021_case3_points,10
+test_puzzle_2021_case3_status,passed
+test_puzzle_2021_case4_points,10
+test_puzzle_2021_case4_status,passed
+test_puzzle_2021_case5_points,10
+test_puzzle_2021_case5_status,passed
+Part1_Total,40
+test_p2_1_delivery_points,10
+test_p2_1_delivery_status,passed
+test_p2_1_distance_points,10
+test_p2_1_distance_status,passed
+test_p2_1_segments_points,10
+test_p2_1_segments_status,passed
+test_p2_1_time_points,10
+test_p2_1_time_status,passed
+test_p2_2_delivery_points,0
+test_p2_2_delivery_status,failed
+test_p2_2_distance_points,10
+test_p2_2_distance_status,passed
+test_p2_2_segments_points,10
+test_p2_2_segments_status,passed
+test_p2_2_time_points,10
+test_p2_2_time_status,passed
+test_p2_3_delivery_points,0
+test_p2_3_delivery_status,failed
+test_p2_3_distance_points,10
+test_p2_3_distance_status,passed
+test_p2_3_segments_points,10
+test_p2_3_segments_status,passed
+test_p2_3_time_points,10
+test_p2_3_time_status,passed
+test_statetour_points,0
+test_statetour_status,failed
+Part2_Total,100
+test_p3_case_1_points,10
+test_p3_case_1_status,passed
+test_p3_case_2_points,10
+test_p3_case_2_status,passed
+test_p3_case_3_points,10
+test_p3_case_3_status,passed
+test_p3_case_4_points,10
+test_p3_case_4_status,passed
+test_p3_case_5_points,10
+test_p3_case_5_status,passed
+Part3_Total,50
+Total,190.0
+Late Penalty,0
+Total Autograding,190.0

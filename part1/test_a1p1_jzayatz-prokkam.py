@@ -7,15 +7,11 @@
 
 #importing student's scripts
 import solver2021
-from collections import defaultdict
 import pytest
 import copy
-import pdb
 import numpy as np
-from pprint import pprint
 ############ Tests ############
 cstate = [[1, 2, 3, 4, 5], [6, 7, 8, 9, 10], [11, 12, 13, 14, 15], [16, 17, 18, 19, 20], [21, 22, 23, 24, 25]]
-board=copy.deepcopy(cstate)
 ROWS = 5
 COLS = 5
 
@@ -111,7 +107,8 @@ def get_map_as_list(map_):
 
 ## Check the output of the puzzle
 def check_puzzle(mapX,path_length):
-    path_found=solver2021.solve(mapX)
+    board=copy.deepcopy(mapX)
+    path_found=solver2021.solve(board)
     print(list(mapX))
     assert len(path_found)!=0, "No moves!"
     #valid path should be subset
@@ -133,10 +130,25 @@ def load_map(fname):
 
 @pytest.mark.timeout(300)
 def test_puzzle_2021_case1():
-    mapX,path_length = load_map('test_board0.txt')
+    mapX,path_length = load_map('test_p1_1.txt')
+    check_puzzle(mapX,path_length)
+
+@pytest.mark.timeout(300)
+def test_puzzle_2021_case2():
+    mapX,path_length = load_map('test_p1_2.txt')
+    check_puzzle(mapX,path_length)
+
+@pytest.mark.timeout(600)
+def test_puzzle_2021_case3():
+    mapX,path_length = load_map('test_p1_3.txt')
     check_puzzle(mapX,path_length)
 
 @pytest.mark.timeout(900)
-def test_puzzle_2021_case2():
-    mapX,path_length = load_map('test_board0.5.txt')
+def test_puzzle_2021_case4():
+    mapX,path_length = load_map('test_p1_4.txt')
+    check_puzzle(mapX,path_length)
+
+@pytest.mark.timeout(900)
+def test_puzzle_2021_case5():
+    mapX,path_length = load_map('test_p1_5.txt')
     check_puzzle(mapX,path_length)
